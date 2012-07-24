@@ -1,1 +1,6 @@
 .DS_Store
+.rbenv-*
+bin/
+.sass-cache
+.bundle
+Gemfile.lock

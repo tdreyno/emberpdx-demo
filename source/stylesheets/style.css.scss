@@ -1,0 +1,58 @@
+@import 'foundation';
+
+@font-face {
+  font-family: "Octicons";
+  src: url('../fonts/octicons.woff') format('woff');
+}
+
+.org-icon, .repo-icon, .issue-icon {
+  font-family: 'Octicons';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-decoration: inherit;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1;
+  text-decoration: none;
+  margin: 0 10px 0 0;
+  vertical-align: -2px;
+}
+.org-icon::before {
+  content: "\f208";
+}
+.repo-icon::before {
+  content: "\f201";
+}
+.issue-icon::before {
+  content: "\f226";
+}
+
+a.click {
+  cursor: pointer;
+}
+
+.orgs li img {
+  vertical-align: -4px;
+}
+
+.issues ul {
+  padding-top: 32px;
+}
+.issues li {
+  line-height: 1.4;
+  margin-bottom: 0.5em;
+}
+
+.issues li .user img {
+  vertical-align: -3px;
+}
+
+.issue h5 {
+  padding-top: 32px;
+}
+
+.issue p.user { margin-bottom: 0; }
+.issue p.user img {
+  margin: 0;
+}
