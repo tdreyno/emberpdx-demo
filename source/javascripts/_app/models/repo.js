@@ -6,5 +6,6 @@ Issues.Repo = DS.Model.extend({
   'name': DS.attr('string'),
   'description': DS.attr('string'),
   owner: DS.belongsTo('Issues.User', { embedded: true }),
-  issues: DS.autoloadHasMany('Issues.Issue')
+  issues: DS.autoloadHasMany('Issues.Issue'),
+  issuesCountBinding: 'issues.length'
 });

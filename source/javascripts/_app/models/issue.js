@@ -12,11 +12,17 @@ Issues.Issue = DS.Model.extend({
   
   // Convert body contents into HTML using Markdown
   bodyHTML: function() {
+    var body = this.get('body');
+    
+    if (Em.empty(body)) { return ""; }
+    
     var converter = new Showdown.converter();
-    return converter.makeHtml(this.get('body'));
+    return converter.makeHtml(body);
   }.property('body'),
   
   user: DS.belongsTo('Issues.User', { embedded: true }),
   assignee: DS.belongsTo('Issues.User', { embedded: true }),
-  comments: DS.autoloadHasMany('Issues.Comment')
+  comments: DS.autoloadHasMany('Issues.Comment'),
+  
+  commentsCountBinding: 'comments.length'
 });

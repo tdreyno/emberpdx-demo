@@ -56,3 +56,10 @@ a.click {
 .issue p.user img {
   margin: 0;
 }
+
+h2, h2 * {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

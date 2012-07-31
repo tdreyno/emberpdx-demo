@@ -1,0 +1,3 @@
+ENV = {
+  VIEW_PRESERVES_CONTEXT: true
+};
