@@ -29,9 +29,5 @@ Issues.issuesController = Em.ArrayController.create({
   // Click event for focusIssue links
   select: function(evt) {
     this.set('selected', evt.context);
-  },
-  
-  _selectedIssueDidChange: function() {
-    this.set('filterString', null);
-  }.observes('selected')
+  }
 });

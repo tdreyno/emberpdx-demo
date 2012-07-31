@@ -16,7 +16,10 @@ Issues.reposController = Em.ArrayController.create({
   
   // When the selected repo changes, clear out it's dependent models.
   _selectedRepoDidChange: function() {
-    Issues.issuesController.set('selected', null);
+    Issues.issuesController.setPropertiest({
+      'selected': null,
+      'filterString': null
+    });
   }.observes('selected'),
   
   // Click event for focusRepo links

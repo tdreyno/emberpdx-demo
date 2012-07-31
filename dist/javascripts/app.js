@@ -36760,7 +36760,10 @@ Issues.reposController = Em.ArrayController.create({
   
   // When the selected repo changes, clear out it's dependent models.
   _selectedRepoDidChange: function() {
-    Issues.issuesController.set('selected', null);
+    Issues.issuesController.setPropertiest({
+      'selected': null,
+      'filterString': null
+    });
   }.observes('selected'),
   
   // Click event for focusRepo links
@@ -36798,11 +36801,7 @@ Issues.issuesController = Em.ArrayController.create({
   // Click event for focusIssue links
   select: function(evt) {
     this.set('selected', evt.context);
-  },
-  
-  _selectedIssueDidChange: function() {
-    this.set('filterString', null);
-  }.observes('selected')
+  }
 });
 
 Issues.issueController = Em.ObjectController.create({
