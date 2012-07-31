@@ -1989,3 +1989,10 @@ a.click {
 /* line 56, style.css.scss */
 .issue p.user img {
   margin: 0; }
+
+/* line 60, style.css.scss */
+h2, h2 * {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none; }
