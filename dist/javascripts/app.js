@@ -36565,23 +36565,20 @@ DS.autoloadHasMany = function(type, options) {
     var cachedModels = this.get(cachedName);
     
     if (Em.none(cachedModels)) {
-      cachedModels = [];
+      cachedModels = DS.AdapterPopulatedRecordArray.create({ type: type, content: Ember.A([]), store: store });
+      // store.registerRecordArray(cachedModels, type);
+      this.set(cachedName, cachedModels);
+    }
+
+    if (!cachedModels.get('isLoading') && !Em.none(this.get('url'))) {
+      var url = this.get('url') + '/' + pluralName;
+      cachedModels.set('isLoading', true);
       
-      if (!Em.none(this.get('url'))) {
-        this.set(cachedName, cachedModels);
-        var url = this.get('url') + '/' + pluralName;
-      
-        var self = this;
-      
-        DS.IssuesRESTAdapter.ajax(url, 'GET', {
-          success: function(json) {
-            var result = store.loadMany(type, json['data']);
-            self.set(cachedName, result.ids.map(function(id) {
-              return type.find(id);
-            }));
-          }
-        });
-      }
+      DS.IssuesRESTAdapter.ajax(url, 'GET', {
+        success: function(json) {
+          cachedModels.load(json["data"]);
+        }
+      });
     }
     
     return cachedModels;
@@ -36605,9 +36602,9 @@ Issues = Em.Application.create({
    */
   ready: function() {
     // Setup our primary/only controller with some data
-    Issues.set('applicationController', Issues.ApplicationController.create({
-      user: Issues.User.find('tdreyno')
-    }));
+    
+    var u = Issues.User.find('tdreyno');
+    Issues.userController.set('content', u);
   }
 });
 /**
@@ -36696,7 +36693,6 @@ Issues.User = DS.Model.extend({
  */
 
 Issues.ApplicationView = Ember.View.extend({
-  controllerBinding: 'Issues.applicationController',
   classNames: 'row'.w()
 });
 /**
@@ -36731,40 +36727,53 @@ Issues.OrgsView = Ember.View.extend({
 Issues.ReposView = Ember.View.extend({
   templateName: 'repos'
 });
-/**
- * The primary controller
- */
+Issues.userController = Ember.ObjectController.create();
 
-Issues.ApplicationController = Ember.Controller.extend({
-  // Who's account we are logged in as
-  user: null,
+Issues.orgsController = Em.ArrayController.create({
+  contentBinding: "Issues.userController.orgs",
+  selected: null,
+  
+  // When the selected org changes, clear out it's dependent models.
+  _selectedOrgDidChange: function() {
+    Issues.reposController.set('selected', null);
+  }.observes('selected'),
+  
+  // Click event for org links
+  select: function(evt) {
+    this.set('selected', evt.context);
+  }
+});
 
-  // The focused org
-  focusedOrg: null,
+Issues.reposController = Em.ArrayController.create({
+  contentBinding: "Issues.orgsController.selected.repos",
+  sortProperties: 'issuesCount'.w(),
+  sortAscending: false,
+  selected: null,
   
-  // The focused repo
-  focusedRepo: null,
+  sortAscendingName: function() {
+    return this.get('sortAscending') ? 'asc' : 'desc';
+  }.property('sortAscending'),
   
-  // The focused issue
-  focusedIssue: null,
+  toggleSortOrder: function() {
+    this.set('sortAscending', !this.get('sortAscending'));
+  },
   
-  // When the focused org changes, clear out it's dependent models.
-  _focusedOrgDidChange: function() {
-    this.set('focusedRepo', null);
-  }.observes('focusedOrg'),
+  // When the selected repo changes, clear out it's dependent models.
+  _selectedRepoDidChange: function() {
+    Issues.issuesController.set('selected', null);
+  }.observes('selected'),
   
-  // When the focused repo changes, clear out it's dependent models.
-  _focusedRepoDidChange: function() {
-    this.set('focusedIssue', null);
-    Issues.issuesController.set('filterString', null);
-  }.observes('focusedRepo')
+  // Click event for focusRepo links
+  select: function(evt) {
+    this.set('selected', evt.context);
+  }
 });
-Issues.issueController = Em.ObjectController.create({
-  contentBinding: "Issues.applicationController.focusedIssue"
-});
+
 Issues.issuesController = Em.ArrayController.create({
-  contentBinding: "Issues.applicationController.focusedRepo.issues",
+  contentBinding: "Issues.reposController.selected.issues",
   sortProperties: 'title updatedAt'.w(),
+  
+  selected: null,
   
   sortAscendingName: function() {
     return this.get('sortAscending') ? 'asc' : 'desc';
@@ -36787,35 +36796,17 @@ Issues.issuesController = Em.ArrayController.create({
   }.property("@each.title", "filterString"),
   
   // Click event for focusIssue links
-  focusIssue: function(evt) {
-    Issues.applicationController.setPath('focusedIssue', evt.context);
-  }
-});
-Issues.orgsController = Em.ArrayController.create({
-  contentBinding: "Issues.applicationController.user.orgs",
-
-  // Click event for focusOrg links
-  focusOrg: function(evt) {
-    Issues.applicationController.setPath('focusedOrg', evt.context);
-  }
-});
-Issues.reposController = Em.ArrayController.create({
-  contentBinding: "Issues.applicationController.focusedOrg.repos",
-  sortProperties: 'issuesCount'.w(),
-  sortAscending: false,
-  
-  sortAscendingName: function() {
-    return this.get('sortAscending') ? 'asc' : 'desc';
-  }.property('sortAscending'),
-  
-  toggleSortOrder: function() {
-    this.set('sortAscending', !this.get('sortAscending'));
+  select: function(evt) {
+    this.set('selected', evt.context);
   },
   
-  // Click event for focusRepo links
-  focusRepo: function(evt) {
-    Issues.applicationController.setPath('focusedRepo', evt.context);
-  }
+  _selectedIssueDidChange: function() {
+    this.set('filterString', null);
+  }.observes('selected')
+});
+
+Issues.issueController = Em.ObjectController.create({
+  contentBinding: "Issues.issuesController.selected"
 });
 
 

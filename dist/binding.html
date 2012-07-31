@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Binding Demo</title>
+    <style>
+      #box {
+        width: 300px;
+        height: 300px;
+        -webkit-transition: all 2s ease-in-out;
+      }
+      .red { background: red; }
+      .green { background: green; }
+      .blue { background: blue; }
+    </style>
+  </head>
+  <body>
+    <script type="text/x-handlebars">
+      <div style="width: 400px; float: left;">
+        <h1>Input</h1>
+        {{view Ember.TextField valueBinding="App.text"}}
+      
+        <h1>Reversed Output</h1>
+        <h2>{{App.reversedValue}}</h2>
+      </div>
+      
+      <div style="width: 400px; float: left;">
+        {{view Em.Select contentBinding="App.colorController.colors" valueBinding="App.colorController.selected"}}
+        {{view id="box" classNameBindings="App.colorController.selected"}}
+      </div>
+    </script>
+    <script src="javascripts/repl.js" type="text/javascript"></script>
+    <script>
+      App = Em.Application.create({
+        text: "default",
+        
+        reversedValue: function() {
+          return this.get("text").split("").reverse().join("");
+        }.property("text")
+      });
+      
+      App.colorController = Em.Controller.create({
+        colors: [
+          "red",
+          "green",
+          "blue"
+        ],
+        selected: "red"
+      });
+    </script>
+  </body>
+</html>

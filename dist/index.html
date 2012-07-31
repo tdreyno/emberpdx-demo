@@ -9,7 +9,7 @@
         {{#each org in controller}}
           <li>
             <h4>
-              <a {{action focusOrg context="org" target="controller"}} class="click">
+              <a {{action select context="org" target="controller"}} class="click">
                 <img {{bindAttr src="org.avatarUrl"}} width="24" height="24">
                 {{org.id}}
                 <small>({{org.reposCount}})</small>
@@ -26,11 +26,12 @@
           <small><a {{action toggleSortOrder target="controller"}} class="click">{{sortAscendingName}}</a></small>
         {{/if}}
       </h2>
+      
       <ul class="side-nav">
         {{#each repo in controller}}
           <li>
             <h5>
-              <a {{action focusRepo context="repo" target="controller"}} class="click">
+              <a {{action select context="repo" target="controller"}} class="click">
                 {{repo.name}}
                 <small>({{repo.issuesCount}})</small>
               </a>
@@ -55,7 +56,7 @@
       <ul>
         {{#each issue in filteredList}}
           <li>
-            <a {{action focusIssue context="issue" target="controller"}} class="click">
+            <a {{action select context="issue" target="controller"}} class="click">
               <img {{bindAttr src="issue.user.avatarUrl" alt="issue.user.id"}} width="16" height="16"> {{issue.title}}
               {{#if issue.commentsCount}}
                 ({{issue.commentsCount}} comments)
