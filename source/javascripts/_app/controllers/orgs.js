@@ -1,5 +1,7 @@
+//= require "_app/controllers/user"
+
 Issues.orgsController = Em.ArrayController.create({
-  // contentBinding: "Issues.userController.orgs",
+  contentBinding: "Issues.userController.orgs",
   selected: null,
   
   // When the selected org changes, clear out it's dependent models.

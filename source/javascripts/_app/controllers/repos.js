@@ -1,3 +1,5 @@
+//= require "_app/controllers/orgs"
+
 Issues.reposController = Em.ArrayController.create({
   contentBinding: "Issues.orgsController.selected.repos",
   sortProperties: 'issuesCount'.w(),

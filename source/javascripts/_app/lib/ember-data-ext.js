@@ -62,23 +62,20 @@ DS.autoloadHasMany = function(type, options) {
     var cachedModels = this.get(cachedName);
     
     if (Em.none(cachedModels)) {
-      cachedModels = [];
+      cachedModels = DS.AdapterPopulatedRecordArray.create({ type: type, content: Ember.A([]), store: store });
+      // store.registerRecordArray(cachedModels, type);
+      this.set(cachedName, cachedModels);
+    }
+
+    if (!cachedModels.get('isLoading') && !Em.none(this.get('url'))) {
+      var url = this.get('url') + '/' + pluralName;
+      cachedModels.set('isLoading', true);
       
-      if (!Em.none(this.get('url'))) {
-        this.set(cachedName, cachedModels);
-        var url = this.get('url') + '/' + pluralName;
-      
-        var self = this;
-      
-        DS.IssuesRESTAdapter.ajax(url, 'GET', {
-          success: function(json) {
-            var result = store.loadMany(type, json['data']);
-            self.set(cachedName, result.ids.map(function(id) {
-              return type.find(id);
-            }));
-          }
-        });
-      }
+      DS.IssuesRESTAdapter.ajax(url, 'GET', {
+        success: function(json) {
+          cachedModels.load(json["data"]);
+        }
+      });
     }
     
     return cachedModels;
