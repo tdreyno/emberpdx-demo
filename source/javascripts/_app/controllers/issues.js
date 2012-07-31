@@ -1,6 +1,8 @@
 Issues.issuesController = Em.ArrayController.create({
-  contentBinding: "Issues.applicationController.focusedRepo.issues",
+  contentBinding: "Issues.reposController.selected.issues",
   sortProperties: 'title updatedAt'.w(),
+  
+  selected: null,
   
   sortAscendingName: function() {
     return this.get('sortAscending') ? 'asc' : 'desc';
@@ -23,7 +25,11 @@ Issues.issuesController = Em.ArrayController.create({
   }.property("@each.title", "filterString"),
   
   // Click event for focusIssue links
-  focusIssue: function(evt) {
-    Issues.applicationController.setPath('focusedIssue', evt.context);
-  }
+  select: function(evt) {
+    this.set('selected', evt.context);
+  },
+  
+  _selectedIssueDidChange: function() {
+    this.set('filterString', null);
+  }.observes('selected')
 });

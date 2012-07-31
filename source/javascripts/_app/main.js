@@ -15,8 +15,8 @@ Issues = Em.Application.create({
    */
   ready: function() {
     // Setup our primary/only controller with some data
-    Issues.set('applicationController', Issues.ApplicationController.create({
-      user: Issues.User.find('tdreyno')
-    }));
+    
+    var u = Issues.User.find('tdreyno');
+    Issues.userController.set('content', u);
   }
 });

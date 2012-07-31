@@ -1,3 +1,3 @@
 Issues.issueController = Em.ObjectController.create({
-  contentBinding: "Issues.applicationController.focusedIssue"
+  contentBinding: "Issues.issuesController.selected"
 });

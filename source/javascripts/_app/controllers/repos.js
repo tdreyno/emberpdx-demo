@@ -1,7 +1,8 @@
 Issues.reposController = Em.ArrayController.create({
-  contentBinding: "Issues.applicationController.focusedOrg.repos",
+  contentBinding: "Issues.orgsController.selected.repos",
   sortProperties: 'issuesCount'.w(),
   sortAscending: false,
+  selected: null,
   
   sortAscendingName: function() {
     return this.get('sortAscending') ? 'asc' : 'desc';
@@ -11,8 +12,13 @@ Issues.reposController = Em.ArrayController.create({
     this.set('sortAscending', !this.get('sortAscending'));
   },
   
+  // When the selected repo changes, clear out it's dependent models.
+  _selectedRepoDidChange: function() {
+    Issues.issuesController.set('selected', null);
+  }.observes('selected'),
+  
   // Click event for focusRepo links
-  focusRepo: function(evt) {
-    Issues.applicationController.setPath('focusedRepo', evt.context);
+  select: function(evt) {
+    this.set('selected', evt.context);
   }
 });
