@@ -16,7 +16,7 @@ Issues.reposController = Em.ArrayController.create({
   
   // When the selected repo changes, clear out it's dependent models.
   _selectedRepoDidChange: function() {
-    Issues.issuesController.setPropertiest({
+    Issues.issuesController.setProperties({
       'selected': null,
       'filterString': null
     });
