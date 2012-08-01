@@ -56,7 +56,7 @@ DS.autoloadHasMany = function(type, options) {
         ids, id, association;
 
     if (typeof type === 'string') {
-      type = this.getPath(type, false) || Em.getPath(window, type);
+      type = this.get(type, false) || Em.get(window, type);
     }
     
     var cachedModels = this.get(cachedName);

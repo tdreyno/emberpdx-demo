@@ -1,1 +1,1 @@
-Issues.userController = Ember.ObjectController.create();
+Issues.UserController = Ember.ObjectController.extend();

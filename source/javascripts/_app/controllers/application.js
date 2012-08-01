@@ -1,0 +1,1 @@
+Issues.ApplicationController = Em.Controller.extend();

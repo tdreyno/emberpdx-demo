@@ -5,6 +5,6 @@ Issues.IssueDetailView = Ember.View.extend({
   templateName: 'issue_detail',
   
   isVisible: function() {
-    return !!this.getPath('controller.content');
+    return !!this.get('controller.content');
   }.property('controller.content')
 });

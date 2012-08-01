@@ -3,110 +3,116 @@
   <head>
     <title>Github Issues</title>
     <%= stylesheet_link_tag :style %>
+    <script type="text/x-handlebars" data-template-name="app">
+      {{outlet}}
+    </script>
     <script type="text/x-handlebars" data-template-name="orgs">
-      <h2><span class="org-icon"></span>Orgs</h2>
-      <ul class="side-nav">
-        {{#each org in controller}}
-          <li>
-            <h4>
-              <a {{action select context="org" target="controller"}} class="click">
-                <img {{bindAttr src="org.avatarUrl"}} width="24" height="24">
-                {{org.id}}
-                <small>({{org.reposCount}})</small>
-              </a>
-            </h4>
-          </li>
-        {{/each}}
-      </ul>
-    </script>
-    <script type="text/x-handlebars" data-template-name="repos">
-      <h2>
-        <span class="repo-icon"></span>Repos
-        {{#if length}}
-          <small><a {{action toggleSortOrder target="controller"}} class="click">{{sortAscendingName}}</a></small>
-        {{/if}}
-      </h2>
-      
-      <ul class="side-nav">
-        {{#each repo in controller}}
-          <li>
-            <h5>
-              <a {{action select context="repo" target="controller"}} class="click">
-                {{repo.name}}
-                <small>({{repo.issuesCount}})</small>
-              </a>
-            </h5>
-          </li>
-        {{/each}}
-      </ul>
-    </script>
-    <script type="text/x-handlebars" data-template-name="issues">
-      <h2>
-        <span class="issue-icon"></span>Issues
-        
-        {{#if length}}
-          <small><a {{action toggleSortOrder target="controller"}} class="click">{{sortAscendingName}}</a></small>
-        {{/if}}
-      </h2>
-      
-      {{#if length}}
-        {{view Ember.TextField type="search" valueBinding="filterString"}}
-      {{/if}}
-      
-      <ul>
-        {{#each issue in filteredList}}
-          <li>
-            <a {{action select context="issue" target="controller"}} class="click">
-              <img {{bindAttr src="issue.user.avatarUrl" alt="issue.user.id"}} width="16" height="16"> {{issue.title}}
-              {{#if issue.commentsCount}}
-                ({{issue.commentsCount}} comments)
-              {{/if}}
-            </a>
-          </li>
-        {{/each}}
-      </ul>
-    </script>
-    <script type="text/x-handlebars" data-template-name="issue_detail">
-      <h2><span class="issue-icon"></span>#{{id}}</h2>
-    
-      <h5>
-        {{title}}
-        <span class="user">
-          <img {{bindAttr src="user.avatarUrl" alt="user.id"}} width="16" height="16">
-        </span>
-      </h5>
-      
-      {{{bodyHTML}}}
-    
-      {{#if comments.length}}
-        <hr>
-        <h6>Comments ({{commentsCount}})</h6>
-        <ul>
-          {{#each comment in comments}}
+      <aside class="orgs two columns">
+        <h2><span class="org-icon"></span>Orgs</h2>
+        <ul class="side-nav">
+          {{#each org in this}}
             <li>
-              <p class="user">
-                <img {{bindAttr src="comment.user.avatarUrl" alt="comment.user.id"}} width="16" height="16">
-                {{comment.user.id}}:
-              </p>
-              {{{comment.bodyHTML}}}
+              <h4>
+                <a {{action selectedOrg org href="true"}} class="click">
+                  <img {{bindAttr src="org.avatarUrl"}} width="24" height="24">
+                  {{org.id}}
+                  <small>({{org.reposCount}})</small>
+                </a>
+              </h4>
             </li>
           {{/each}}
         </ul>
-      {{/if}}
+      </aside>
+      
+      {{outlet}}
+    </script>
+    <script type="text/x-handlebars" data-template-name="repos">
+      <div class="repos three columns">
+        <h2>
+          <span class="repo-icon"></span>Repos
+          {{#if length}}
+            <small><a {{action toggleSortOrder target="controller"}} class="click">{{sortAscendingName}}</a></small>
+          {{/if}}
+        </h2>
+      
+        <ul class="side-nav">
+          {{#each repo in this}}
+            <li>
+              <h5>
+                <a {{action selectedRepo repo href="true"}} class="click">
+                  {{repo.name}}
+                  <small>({{repo.issuesCount}})</small>
+                </a>
+              </h5>
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+      
+      {{outlet}}
+    </script>
+    <script type="text/x-handlebars" data-template-name="issues">
+      <div class="issues three columns">
+        <h2>
+          <span class="issue-icon"></span>Issues
+        
+          {{#if length}}
+            <small><a {{action toggleSortOrder target="controller"}} class="click">{{sortAscendingName}}</a></small>
+          {{/if}}
+        </h2>
+      
+        {{#if length}}
+          {{view Ember.TextField type="search" valueBinding="filterString"}}
+        {{/if}}
+      
+        <ul>
+          {{#each issue in filteredList}}
+            <li>
+              <a {{action selectedIssue issue href="true"}} class="click">
+                <img {{bindAttr src="issue.user.avatarUrl" alt="issue.user.id"}} width="16" height="16"> {{issue.title}}
+                {{#if issue.commentsCount}}
+                  ({{issue.commentsCount}} comments)
+                {{/if}}
+              </a>
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+      
+      {{outlet}}
+    </script>
+    <script type="text/x-handlebars" data-template-name="issue_detail">
+      <div class="issue four columns">
+        <h2><span class="issue-icon"></span>#{{id}}</h2>
+    
+        <h5>
+          {{title}}
+          <span class="user">
+            <img {{bindAttr src="user.avatarUrl" alt="user.id"}} width="16" height="16">
+          </span>
+        </h5>
+      
+        {{{bodyHTML}}}
+    
+        {{#if comments.length}}
+          <hr>
+          <h6>Comments ({{commentsCount}})</h6>
+          <ul>
+            {{#each comment in comments}}
+              <li>
+                <p class="user">
+                  <img {{bindAttr src="comment.user.avatarUrl" alt="comment.user.id"}} width="16" height="16">
+                  {{comment.user.id}}:
+                </p>
+                {{{comment.bodyHTML}}}
+              </li>
+            {{/each}}
+          </ul>
+        {{/if}}
+      </div>
     </script>
   </head>
   <body>
-    <script type="text/x-handlebars" data-view="Issues.ApplicationView">
-      {{view Issues.OrgsView tagName="aside"
-             classNames="orgs two columns"
-             controllerBinding="Issues.orgsController"}}
-      {{view Issues.ReposView classNames="repos three columns"
-             controllerBinding="Issues.reposController"}}
-      {{view Issues.IssuesView classNames="issues three columns"
-             controllerBinding="Issues.issuesController"}}
-      {{view Issues.IssueDetailView classNames="issue four columns"
-             controllerBinding="Issues.issueController"}}
-    </script>
     <%= javascript_include_tag :app %>
   </body>
 </html>
